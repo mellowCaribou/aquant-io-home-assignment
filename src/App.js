@@ -3,17 +3,16 @@ import logo from './logo.svg';
 import styles from './App.scss';
 import { MarkerForm } from './components/MarkerForm/MarkerForm';
 import { Map } from './components/Map/Map';
+import { MarkersProvider } from './components/context/MarkersState';
 
 function App() {
   return (
-    <div className="main">
-      <div className="markers-form">
-        <MarkerForm></MarkerForm>
+    <MarkersProvider>
+      <div className="main">
+        <MarkerForm className="markers-form"></MarkerForm>
+        <Map className="map"></Map>
       </div>
-      <div className="map">
-        <Map></Map>
-      </div>
-    </div>
+    </MarkersProvider>
   );
 }
 

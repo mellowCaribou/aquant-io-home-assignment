@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const MarkerForm = () => {
+export const MarkerForm = ({ className }) => {
     return (
-        <div>
+        <div className={className}>
             MARKERFORM
         </div>
     )
