@@ -20,7 +20,6 @@ export const MarkersContext = createContext(markersInitial);
 export const MarkersProvider = ({ children }) => {
     const [state, dispach] = useReducer(MarkersReducer, markersInitial);
 
-    console.log(state.markers);
     const addMarker = (marker) => {
         dispach(marker);
     }
