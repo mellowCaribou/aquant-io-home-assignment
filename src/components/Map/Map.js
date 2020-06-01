@@ -26,7 +26,9 @@ export const Map = ({ className }) => {
 
             window[callbackName] = () => {
                 setMicrosoft(window.Microsoft);
-                setMap(window.Microsoft.Maps.Map(`#${mapElementId}`, {}));
+                setMap(window.Microsoft.Maps.Map(`#${mapElementId}`, {
+                    zoom: 3
+                }));
             };
             script.onerror = (error) => {
                 reject(error);
