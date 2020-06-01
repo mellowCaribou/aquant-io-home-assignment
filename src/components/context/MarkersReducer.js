@@ -3,8 +3,7 @@ export default (state, data) => {
         return state;
     }
 
-    //not sure why an error is thown here
-    const markers = state.markers.concat([data.newMarker]);
+    const markers = [...state.markers, data.newMarker]
     return {
         ...state,
         markers: markers

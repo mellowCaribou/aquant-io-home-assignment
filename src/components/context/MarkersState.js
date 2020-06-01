@@ -3,15 +3,7 @@ import MarkersReducer from './MarkersReducer';
 
 const markersInitial = {
     markers: [
-        {
-            "location": [13.0827, 80.2707], "option": { color: 'red' }
-        },
-        {
-            "location": [15.0827, 82.2707], "option": { color: 'green' }
-        },
-        {
-            "location": [30.0827, 75], "option": { color: 'blue' }
-        }
+
     ]
 };
 
