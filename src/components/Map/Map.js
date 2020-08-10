@@ -9,10 +9,6 @@ export const Map = ({ className }) => {
     const context = useContext(MarkersContext);
     const mapMarkers = [];
 
-    const componentDidUpdate = (prevProps) => {
-        console.log('update');
-    }
-
     const loadBingApi = async (key) => {
         const callbackName = "bingAPIReady";
         let url = `https://www.bing.com/api/maps/mapcontrol?callback=${callbackName}&key=${key}`;
@@ -67,23 +63,33 @@ export const Map = ({ className }) => {
         });
     }
 
+    const deleteMapPins = () => {
+        for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+            var polygon = map.entities.get(i);
+            if (polygon instanceof Microsoft.Maps.Pushpin) {
+                map.entities.removeAt(i);
+            }
+        }
+    }
+
     useEffect(() => {
         if (!context || !Array.isArray(context.markers) || !map) {
             return;
         }
 
+        deleteMapPins()
+        deleteMapPolygons();
         context.markers.forEach(contextMarker => {
             if (mapMarkers.indexOf(contextMarker) === -1) {
                 mapMarkers.push(contextMarker);
                 map.entities.push(generateNewPin(contextMarker));
 
                 if (mapMarkers.length > 1) {
-                    deleteMapPolygons();
                     map.entities.push(createPolygonFromMapMarkers());
                 }
             }
         })
-    }, [context]);
+    }, [context.markers]);
 
     return (
         <div id={mapElementId} />

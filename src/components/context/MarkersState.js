@@ -12,13 +12,13 @@ export const MarkersContext = createContext(markersInitial);
 export const MarkersProvider = ({ children }) => {
     const [state, dispach] = useReducer(MarkersReducer, markersInitial);
 
-    const addMarker = (marker) => {
-        dispach(marker);
+    const editMarkers = (data) => {
+        dispach(data);
     }
 
     return (<MarkersContext.Provider value={{
         markers: state.markers,
-        addMarker
+        editMarkers
     }}>
         {children}
     </MarkersContext.Provider>)

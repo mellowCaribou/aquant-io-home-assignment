@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import Button from '@material-ui/core/Button';
 import { MarkersContext } from '../context/MarkersState';
 
+
 export const MarkerForm = ({ className }) => {
 
     const markers = useContext(MarkersContext);
@@ -20,11 +21,21 @@ export const MarkerForm = ({ className }) => {
         if (!long || !lat || !isLatValid(lat) || !isLongValid(long)) {
             return alert('please insert a valid location');
         }
-        markers.addMarker({
-            newMarker: {
+        markers.editMarkers({
+            marker: {
                 "location": [lat, long]
-            }
+            },
+            action: 'add'
         })
+    }
+
+    const removeMarkerHandler = (marker) => {
+        return () => {
+            markers.editMarkers({
+                marker: marker,
+                action: 'remove'
+            })
+        }
     }
 
     return (
@@ -33,8 +44,14 @@ export const MarkerForm = ({ className }) => {
             <form className="">
                 <input placeholder="Lat" min="-90" max="90" type="number" name="lat" onChange={(event) => setLat(event.target.value)}></input>
                 <input placeholder="Long" min="-180" max="180" type="number" name="long" onChange={(event) => setLong(event.target.value)}></input>
-                <Button onClick={addNewMarker}>Add Marker</Button>
+                <Button className='add-btn' onClick={addNewMarker}>Add Marker</Button>
             </form>
+            <ul>
+                {markers.markers.map((marker, i) => (<li className='marker-item' key={i}>
+                <div>{'Long:' + marker.location[0] + ', Lat:' + marker.location[1]}</div>
+                <Button onClick={removeMarkerHandler(marker)}>Delete</Button>
+                </li>))}
+            </ul>
         </div>
     )
 }
