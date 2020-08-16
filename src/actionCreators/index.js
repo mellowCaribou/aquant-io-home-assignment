@@ -5,14 +5,18 @@ const ActionsEnum = {
 
 Object.freeze(ActionsEnum);
 
-const addMarker = (marker) => {
-    return {
+const addMarker = (marker) => async (dispatch, getState) => {
+    let res = await (await fetch('https://jsonplaceholder.typicode.com/posts')).json();
+    console.log('the await is over, Gaze upon thy marvelous posts:')
+    console.table(res, ['id', 'userId', 'title', 'body']);
+
+    dispatch({
         type: ActionsEnum.ADD,
         marker
-    }
+    })
 }
 
-const removeMarker = (marker) => {
+const removeMarker = (marker) => (dispatch, getState) => {
     return {
         type: ActionsEnum.REMOVE,
         marker

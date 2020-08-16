@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import React, { useState, useEffect, useRef } from 'react'
-
 import {addMarker, removeMarker} from '../../actionCreators';
+import salesforceUtils from '../../utils/salesforce';
 
 const MarkerForm = ({ className, markers, addMarker, removeMarker }) => {
 
@@ -18,7 +18,7 @@ const MarkerForm = ({ className, markers, addMarker, removeMarker }) => {
 
         if(mapIdParam){
             setMapId(mapIdParam);
-            window.Visualforce.remoting.Manager.invokeAction('MapsController.GetMap', mapIdParam, (res,e) => {
+            salesforceUtils.invoke('GetMap', (res,e) => {
                 console.log('GetMap', res, e);
                 if(mapNameInput.current){
                     setMapName(res.Name);
@@ -29,7 +29,7 @@ const MarkerForm = ({ className, markers, addMarker, removeMarker }) => {
                         location: [map_cord.Latitude__c, map_cord.Longitude__c]
                     }))
                 }
-            });
+            }, mapIdParam);
         }
     }, []);
 
@@ -70,15 +70,15 @@ const MarkerForm = ({ className, markers, addMarker, removeMarker }) => {
         markersToAdd = markersToAdd || [];
         markersToDelete = markersToDelete || [];
         if(mapId){
-            window.Visualforce.remoting.Manager.invokeAction('MapsController.UpdateMap', mapId, mapName, markersToAdd.map(markerToCordSObject), markersToDelete.map(markerToCordSObject), (res,e) =>{
+            salesforceUtils.invoke('MapsController.UpdateMap', markersToAdd.map(markerToCordSObject), markersToDelete.map(markerToCordSObject), (res,e) =>{
                 console.log('UpdateMap', res, e)
-            })
+            }, mapId, mapName)
         }
         else {
-            window.Visualforce.remoting.Manager.invokeAction('MapsController.CreateMap', mapName, markers.map(markerToCordSObject), (res,e) =>{
+            salesforceUtils.invoke('MapsController.CreateMap', markers.map(markerToCordSObject), (res,e) =>{
                 console.log('CreateMap', res, e)
                 setMapId(res);
-            })
+            }, mapName)
         }
 
     }

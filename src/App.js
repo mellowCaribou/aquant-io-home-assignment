@@ -1,13 +1,14 @@
 import React from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import styles from './App.scss';
 import MarkerForm from './components/MarkerForm/MarkerForm';
 import Map from './components/Map/Map';
 import reducers from './reducers';
 
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(thunk));
 
 console.log(store.getState());
 
