@@ -1,18 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
 import styles from './App.scss';
-import { MarkerForm } from './components/MarkerForm/MarkerForm';
-import { Map } from './components/Map/Map';
-import { MarkersProvider } from './components/context/MarkersState';
+import MarkerForm from './components/MarkerForm/MarkerForm';
+import Map from './components/Map/Map';
+import reducers from './reducers';
+
+const store = createStore(reducers);
+
+console.log(store.getState());
+
 
 function App() {
   return (
-    <MarkersProvider>
+    <Provider store={store}>
       <div className="main">
         <MarkerForm className="markers-form"></MarkerForm>
         <Map className="map"></Map>
       </div>
-    </MarkersProvider>
+    </Provider>
   );
 }
 

@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect, useRef } from 'react'
+import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import { MarkersContext } from '../context/MarkersState';
+import React, { useState, useEffect, useRef } from 'react'
 
+import {addMarker, removeMarker} from '../../actionCreators';
 
-export const MarkerForm = ({ className }) => {
+const MarkerForm = ({ className, markers, addMarker, removeMarker }) => {
 
-    const markersContext = useContext(MarkersContext);
     const [mapName, setMapName] = useState('');
     const [mapId, setMapId] = useState(null);
     const [lat, setLat] = useState(null);
@@ -25,11 +25,8 @@ export const MarkerForm = ({ className }) => {
                     mapNameInput.current.value = res.Name;
                 }
                 if(Array.isArray(res.Map_Cords__r)){
-                    res.Map_Cords__r.forEach(map_cord => markersContext.editMarkers({
-                        action: 'add',
-                        marker: {
-                            location: [map_cord.Latitude__c, map_cord.Longitude__c]
-                        }
+                    res.Map_Cords__r.forEach(map_cord => addMarker({
+                        location: [map_cord.Latitude__c, map_cord.Longitude__c]
                     }))
                 }
             });
@@ -58,19 +55,13 @@ export const MarkerForm = ({ className }) => {
         const newMarker = {
             location: [lat, long]
         }
-        markersContext.editMarkers({
-            marker: newMarker,
-            action: 'add'
-        });
+        addMarker(newMarker);
         saveMap([newMarker]);
     }
 
     const removeMarkerHandler = (marker) => {
         return () => {
-            markersContext.editMarkers({
-                marker: marker,
-                action: 'remove'
-            });
+            removeMarker(marker);
             saveMap(null, [marker]);
         };
     }
@@ -84,7 +75,7 @@ export const MarkerForm = ({ className }) => {
             })
         }
         else {
-            window.Visualforce.remoting.Manager.invokeAction('MapsController.CreateMap', mapName, markersContext.markers.map(markerToCordSObject), (res,e) =>{
+            window.Visualforce.remoting.Manager.invokeAction('MapsController.CreateMap', mapName, markers.map(markerToCordSObject), (res,e) =>{
                 console.log('CreateMap', res, e)
                 setMapId(res);
             })
@@ -109,7 +100,7 @@ export const MarkerForm = ({ className }) => {
                 <Button className='add-btn' onClick={onSaveClick}>Save</Button>
             </form>
             <ul>
-                {markersContext.markers.map((marker, i) => (<li className='marker-item' key={i}>
+                {markers.map((marker, i) => (<li className='marker-item' key={i}>
                 <div>{'Long:' + marker.location[0] + ', Lat:' + marker.location[1]}</div>
                 <Button onClick={removeMarkerHandler(marker)}>Delete</Button>
                 </li>))}
@@ -117,3 +108,9 @@ export const MarkerForm = ({ className }) => {
         </div>
     )
 }
+
+const mapStateToProps = (state) => {
+    return {markers: state.markers};
+}
+
+export default connect(mapStateToProps, {addMarker, removeMarker})(MarkerForm);

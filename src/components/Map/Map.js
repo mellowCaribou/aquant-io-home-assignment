@@ -1,12 +1,11 @@
-import React, { UseContext, useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { config } from '../../config'
-import { MarkersContext } from '../context/MarkersState';
+import { connect } from 'react-redux';
 
-export const Map = ({ className }) => {
+const Map = ({ className, markers }) => {
     const mapElementId = 'bingMap';
     let [map, setMap] = useState(null);
     let [Microsoft, setMicrosoft] = useState(null);
-    const context = useContext(MarkersContext);
     const mapMarkers = [];
 
     const loadBingApi = async (key) => {
@@ -73,13 +72,13 @@ export const Map = ({ className }) => {
     }
 
     useEffect(() => {
-        if (!context || !Array.isArray(context.markers) || !map) {
+        if (!Array.isArray(markers) || !map) {
             return;
         }
 
         deleteMapPins()
         deleteMapPolygons();
-        context.markers.forEach(contextMarker => {
+        markers.forEach(contextMarker => {
             if (mapMarkers.indexOf(contextMarker) === -1) {
                 mapMarkers.push(contextMarker);
                 map.entities.push(generateNewPin(contextMarker));
@@ -89,9 +88,17 @@ export const Map = ({ className }) => {
                 }
             }
         })
-    }, [context.markers]);
+    }, [markers]);
 
     return (
         <div id={mapElementId} />
     )
 }
+
+const mapStateToProps = (state) => {
+    return {
+        markers: state.markers
+    }
+}
+
+export default connect(mapStateToProps)(Map);
